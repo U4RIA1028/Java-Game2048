@@ -25,6 +25,7 @@ public class Game2048 extends JPanel {
     static int max;
     static int now;
     int HighestScore;
+    int []Ranking = new int[100];
     int count = 0;
  
     private Color gridColor = new Color(0xBBADA0);
@@ -41,13 +42,13 @@ public class Game2048 extends JPanel {
     public Game2048() {
         setPreferredSize(new Dimension(900, 700));
         setBackground(new Color(0xFAF8EF));
-        setFont(new Font("SansSerif", Font.BOLD, 48)); //Sans Serif ÆùÆ® »ç¿ë
+        setFont(new Font("SansSerif", Font.BOLD, 48)); //Sans Serif ï¿½ï¿½Æ® ï¿½ï¿½ï¿½
         setFocusable(true);
 
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                startGame(); // °ÔÀÓ ½ÃÀÛ
+                startGame(); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 repaint();
             }
         });
@@ -58,16 +59,16 @@ public class Game2048 extends JPanel {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_UP:
                         moveUp();
-                        break;//À­ ¹æÇâÅ°
+                        break;//ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å°
                     case KeyEvent.VK_DOWN:
                         moveDown();
-                        break;//¾Æ·§ ¹æÇâÅ°
+                        break;//ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½Å°
                     case KeyEvent.VK_LEFT:
                         moveLeft();
-                        break;//¿ÞÂÊ ¹æÇâÅ°
+                        break;//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å°
                     case KeyEvent.VK_RIGHT:
                         moveRight();
-                        break;//¿À¸¥ÂÊ ¹æÇâÅ°
+                        break;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Å°
                 }
                 repaint();
             }
@@ -79,7 +80,7 @@ public class Game2048 extends JPanel {
         super.paintComponent(gg);
         Graphics2D g = (Graphics2D) gg;
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON); // ¾ÈÆ¼¾Ë¸®¾î½Ì »ç¿ë // µµÇüÀÇ ¿Ü°û ¸ðÇüÀ» ´Ùµë´Â? api
+                RenderingHints.VALUE_ANTIALIAS_ON); // ï¿½ï¿½Æ¼ï¿½Ë¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ü°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ùµï¿½ï¿½? api
  
         drawGrid(g);
     }
@@ -94,13 +95,13 @@ public class Game2048 extends JPanel {
             gamestate = State.running;
             tiles = new Tile[side][side];
             first();
-            first(); // ·£´ýÇÑ À§Ä¡¿¡ Å¸ÀÏ »ý¼º
+            first(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         }
     }
  
     void drawGrid(Graphics2D g) {
         g.setColor(gridColor);
-        g.fillRoundRect(200, 100, 499, 499, 15, 15);//°¡ÀåÀÚ¸® ±×¸®µå
+        g.fillRoundRect(200, 100, 499, 499, 15, 15);//ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½×¸ï¿½ï¿½ï¿½
  
         if (gamestate == State.running) {
             for (int r = 0; r < side; r++) {
@@ -134,7 +135,7 @@ public class Game2048 extends JPanel {
             g.setColor(startColor);
             g.fill(rect);
             g.setColor(gridColor.darker());
-            g.drawString("³¡³»±â", 745 , 485);
+            g.drawString("ëë‚´ê¸°", 745 , 485);
             
             addMouseListener(new MouseAdapter() {
                 @Override
@@ -155,7 +156,7 @@ public class Game2048 extends JPanel {
                 }
             });
 
-        } else { // Ã³À½ ½ÃÀÛ È­¸é
+        } else { // Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È­ï¿½ï¿½
             g.setColor(startColor);
             g.fillRoundRect(215, 115, 469, 469, 7, 7);
  
@@ -175,13 +176,41 @@ public class Game2048 extends JPanel {
                 {
                 	HighestScore = now;
                 }
-      
-            	g.drawString("game over", 390, 330);
-            	g.drawString("Highest Score : " + HighestScore , 330 , 380);
-                g.drawString("Score : " + now , 380 , 430);
+            	
+            	//ëž­í‚¹ì— ê°’ ë„£ê¸°
+            	Ranking[count] = now;
+            	
+            	//ëž­í‚¹ ì •ë ¬
+            	for(int i = 1; i <= count; i++)
+            	{
+            		for(int j = 1; j < i+1; j++)
+            		{
+            			if(Ranking[j] < Ranking[j+1])
+            			{
+            				int temp = Ranking[j];
+            				Ranking[j] = Ranking[j+1];
+            				Ranking[j+1] = temp;
+            			}
+            		}
+            	}
+            
+            	g.drawString("Ranking", 390, 330);
+            	for(int i = 1; i < 6; i++)
+            	{	
+            		int height = 27;
+            		if(Ranking[i] == 0)
+            		{
+            			break;
+            		}
+            		else
+            		{
+            			g.drawString(i + ". Score : " + Ranking[i] + "" , 360 , 340+i*height);
+            		}
+            	}
+                g.drawString("Current Score : " + now , 300 , 530);
                 g.setFont(new Font("SansSerif", Font.BOLD, 25));
                 g.setColor(gridColor);
-                g.drawString("»õ°ÔÀÓÀ» ½ÃÀÛÇÏ·Á¸é Å¬¸¯ÇÏ¼¼¿ä", 270, 490);
+                g.drawString("ë‹¤ì‹œì‹œìž‘í•˜ë ¤ë©´ í´ë¦­í•˜ì„¸ìš”", 300, 570);
                 
             }
             
@@ -189,20 +218,20 @@ public class Game2048 extends JPanel {
             g.setColor(gridColor);
             if(count == 0)
             {
-            	g.drawString("½ÃÀÛÇÏ·Á¸é Å¬¸¯ÇÏ¼¼¿ä", 290, 490);
+            	g.drawString("í´ë¦­í•˜ì—¬ ì‹œìž‘í•˜ì„¸ìš”", 290, 490);
             }
-            // ¸ÞÀÎ Å¸ÀÌÆ² ±Û¾¾
+            // ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½Æ² ï¿½Û¾ï¿½
         }
     }
  
     void drawTile(Graphics2D g, int r, int c) {
         int value = tiles[r][c].getValue();
  
-        g.setColor(colorTable[(int) (Math.log(value) / Math.log(2)) + 1]);//Å¸ÀÏ »ö»ó ¼³Á¤
+        g.setColor(colorTable[(int) (Math.log(value) / Math.log(2)) + 1]);//Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         g.fillRoundRect(215 + c * 121, 115 + r * 121, 106, 106, 7, 7);
         String s = String.valueOf(value);
  
-        g.setColor(value < 128 ? colorTable[0] : colorTable[1]);//Å¸ÀÏ ¼ýÀÚ »ö±ò ¼³Á¤
+        g.setColor(value < 128 ? colorTable[0] : colorTable[1]);//Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
  
         FontMetrics fm = g.getFontMetrics();
         int asc = fm.getAscent();
@@ -211,7 +240,7 @@ public class Game2048 extends JPanel {
         int x = 215 + c * 121 + (106 - fm.stringWidth(s)) / 2;
         int y = 115 + r * 121 + (asc + (106 - (asc + dec)) / 2);
  
-        g.drawString(s, x, y);//Å¸ÀÏ ¼ýÀÚ »ý¼º
+        g.drawString(s, x, y);//Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     }
  
  
